@@ -29,7 +29,9 @@ $dssp_banhmi = get_sp_banhmi(4);
 if (!isset($_GET['pg'])) {
     include "view/home.php";
 } else {
+    switch ($_GET['pg']) {
 case 'dangnhap':
+    
             include "view/dangnhap.php";
             if (isset($_POST['submit']) && ($_POST["submit"])) {
                 $username = $_POST['username'];
@@ -128,4 +130,5 @@ case 'dangnhap':
             }
             include "view/myaccount_confirm.php";
             break;
+}
 }
