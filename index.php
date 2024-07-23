@@ -31,7 +31,7 @@ if (!isset($_GET['pg'])) {
 } else {
     switch ($_GET['pg']) {
 case 'dangnhap':
-    
+    switch ($_GET['pg']) {
             include "view/dangnhap.php";
             if (isset($_POST['submit']) && ($_POST["submit"])) {
                 $username = $_POST['username'];
