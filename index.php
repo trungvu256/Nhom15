@@ -30,19 +30,18 @@ if (!isset($_GET['pg'])) {
     include "view/home.php";
 } else {
     switch ($_GET['pg']) {
-case 'dangnhap':
-    switch ($_GET['pg']) {
+        case 'dangnhap':
             include "view/dangnhap.php";
             if (isset($_POST['submit']) && ($_POST["submit"])) {
                 $username = $_POST['username'];
                 $password = $_POST['password'];
                 $kq = checkuser($username, $password);
-
+        
                 if (is_array($kq) && (count($kq))) {
                     $_SESSION['s_user'] = $kq;
                     header('location:index.php');
                 } else {
-                    $tb = "Tài khoản không tồn tại khoặc sai";
+                    $tb = "Tài khoản không tồn tại hoặc sai";
                     $_SESSION['tb_dangnhap'] = $tb;
                     header('location:index.php?pg=dangnhap');
                 }
@@ -325,5 +324,120 @@ case 'dangnhap':
                 }
     
                 break;
+
+                case 'addcart':
+                    if (isset($_POST['addcart'])) {
+                        $id = $_POST['idpro'];
+                        $name = $_POST['tensp'];
+                        $idpro = $_POST['idpro'];
+                        $img = $_POST['img'];
+                        $price = $_POST['price'];
+                        $soluong = $_POST['soluong'];
+                        $tien;
+                        !isset($_POST['size']) ? $tien = 0 : $tien = $_POST['size'];
+                        $thanhtien = (int) $soluong * ((int) $price + (int) $tien);
+                        // $sp = [$name,$img,$price,$soluong];
+                        $sp = array(
+                            "id" => $id,
+                            "idpro" => $idpro,
+                            "name" => $name,
+                            "img" => $img,
+                            "price" => $price,
+                            "soluong" => $soluong,
+                            "thanhtien" => $thanhtien,
+                            "tien" => $tien
+                        );
+                        // print_r($sp);
+                        // die();
+                        if (isset($_SESSION['giohang'])) {
+                            $check = false;
+                            foreach ($_SESSION['giohang'] as &$value) {
+                                if ($value['idpro'] == $idpro && $value['tien'] == $sp['tien']) {
+                                    $check = true;
+                                    $value['soluong'] += $soluong;
+                                    break;
+                                }
+                            }
+                            if ($check == false) {
+                                array_push($_SESSION['giohang'], $sp);
+                            }
+                        } else {
+                            $_SESSION['giohang'] = array($sp);
+                        }
+        
+        
+        
+                        // echo'<pre>';
+                        // print_r($_SESSION['giohang']);
+                        // die();
+        
+                        header('location:index.php?pg=viewcart');
+                    }
+                    break;
+                case 'viewcart':
+        
+                    if (isset($_GET['del']) && ($_GET['del'] == 1)) {
+                        unset($_SESSION["giohang"]);
+                        // $_SESSION['giohang']=[];
+                        header('location:index.php?pg=viewcart');
+                    } else {
+                        if (isset($_SESSION["giohang"])) {
+                            $tongdonhang = get_tongdonhang();
+                        }
+                        $giatrivoucher = 0;
+                        if (isset($_GET['voucher']) && ($_GET['voucher'] == 1)) {
+                            $tongdonhang = $_POST['tongdonhang'];
+                            $mavoucher = $_POST['mavoucher'];
+                            // so sanh voi dtb de lay gia tri ve
+                            $giatrivoucher = 10;
+                        }
+                        if ($tongdonhang == 0) {
+                            $giatrivoucher = 0;
+                        }
+                        $thanhtoan = $tongdonhang - $giatrivoucher;
+        
+                        include "view/donhang.php";
+                    }
+                    break;
+        
+                case 'xoasp':
+        
+                    if (isset($_GET['remove'])) {
+                        $idpro_to_remove = $_GET['remove'];
+        
+                        // Loop through the cart and find the item with the specified product ID
+                        foreach ($_SESSION['giohang'] as $key => $sp) {
+        
+        
+                            if ($sp['idpro'] == $idpro_to_remove) {
+                                // Remove the item from the cart
+                                unset($_SESSION['giohang'][$key]);
+                                break; // Stop the loop after removing the item
+                            }
+                        }
+                    }
+        
+                    // Redirect back to the viewcart page
+        
+                    header('location: index.php?pg=viewcart');
+                    include "view/viewcart.php";
+                    break;
+                case 'dangnhap':
+                    include "view/dangnhap.php";
+                    if (isset($_POST['submit']) && ($_POST["submit"])) {
+                        $username = $_POST['username'];
+                        $password = $_POST['password'];
+                        $kq = checkuser($username, $password);
+        
+                        if (is_array($kq) && (count($kq))) {
+                            $_SESSION['s_user'] = $kq;
+                            header('location:index.php');
+                        } else {
+                            $tb = "Tài khoản không tồn tại khoặc sai";
+                            $_SESSION['tb_dangnhap'] = $tb;
+                            header('location:index.php?pg=dangnhap');
+                        }
+                    }
+                    break;
 }
 }
