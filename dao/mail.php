@@ -1,15 +1,15 @@
 <?php
 
-include "mail/sendmail.php";
+// include "mail/sendmail.php";
 
-// Mail lấy pass
-function submit_mailpass($pass, $mail)
-{
-  $maildathang = $mail;
-  $tieude = "Đây là mail lấy lại mật khẩu !";
-  $noidung = "";
+// // Mail lấy pass
+// function submit_mailpass($pass, $mail)
+// {
+//   $maildathang = $mail;
+//   $tieude = "Đây là mail lấy lại mật khẩu !";
+//   $noidung = "";
 
-  $noidung .= 
-  $mail = new Mailer();
-  $mail->dathangmail($maildathang, $tieude, $noidung,);
-}
+//   $noidung .= 
+//   $mail = new Mailer();
+//   $mail->dathangmail($maildathang, $tieude, $noidung,);
+// }

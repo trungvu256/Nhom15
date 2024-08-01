@@ -48,7 +48,7 @@ if (!isset($_GET['pg'])) {
             }
             break;
         case 'dangky':
-            include "view/dangky.php";
+            include "view/dangki.php";
             break;
         case 'adduser':
             if (isset($_POST['submit']) && ($_POST["submit"])) {
@@ -439,5 +439,52 @@ if (!isset($_GET['pg'])) {
                         }
                     }
                     break;
+                    case 'sanpham':
+                        $itemsPerPage = 8;
+                        $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+                        $dsdm = danhmuc_show();
+            
+                        if ($current_page == '' || $current_page == 1) {
+                            $begin = 0;
+                        } else {
+                            $begin = ($current_page - 1) * $itemsPerPage;
+                        }
+            
+                        if (!isset($_GET['iddm'])) {
+                            $iddm = '';
+                            $titlepage = "";
+                        } else {
+                            $iddm = $_GET['iddm'];
+                            $titlepage = get_name_dm($iddm);
+                        }
+                        //kiem tra form search
+                        if (isset($_GET["timkiem"]) && ($_GET["timkiem"])) {
+                            $kyw = $_GET['kyw'];
+                            $titlepage = " Kết quả tìm kiếm với từ khoá :<span>  " . $kyw . "</span>";
+                        } else {
+                            $kyw = "";
+                        }
+                        if (isset($_GET['min']) || isset($_GET['max'])) {
+            
+                            $min = $_GET['min'];
+                            $max = $_GET['max'];
+                        } else {
+                            $min = "";
+                            $max = "";
+                        }
+                        $total_pages = so_trang($itemsPerPage, $iddm, $min, $max, $kyw);
+            
+            
+                        $dssp = get_dssp($kyw, $iddm, $begin, $itemsPerPage, $min, $max);
+                        include "view/sanpham.php";
+                        break;
+
+                        case 'danhmuc':
+                            $dsdm = danhmuc_show();
+                            // echo "<pre>";
+                            // print_r($dsdm);
+                            // die();
+                            include "view/danhmuc.php";
+                            break;
 }
 }
