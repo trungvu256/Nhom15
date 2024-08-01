@@ -439,5 +439,18 @@ if (!isset($_GET['pg'])) {
                         }
                     }
                     break;
+                    case 'sanphamchitiet':
+                        if (isset($_GET['idpro'])) {
+                            $id = $_GET['idpro'];
+                            $spchitiet = get_sp__by_id($id);
+                            $bienthe = get_bienthe($id);
+                            $dsdm = danhmuc_show();
+                            $iddm = $spchitiet['iddm'];
+                            $splienquan = get_dssp_lienquan($iddm, $id, 4);
+                            include "view/sanphamchitiet.php";
+                        } else {
+                            include "view/home.php";
+                        }
+                        break;
 }
 }
