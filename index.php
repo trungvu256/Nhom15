@@ -651,3 +651,4 @@ if (!isset($_GET['pg'])) {
                                         break;
 }
 }
+include "view/footer.php";
