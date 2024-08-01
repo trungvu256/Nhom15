@@ -486,5 +486,168 @@ if (!isset($_GET['pg'])) {
                             // die();
                             include "view/danhmuc.php";
                             break;
+
+                            case 'mybill':
+                                $itemsPerPage = 4;
+                                $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+                                $total_pages = 0;
+                                if ($current_page == '' || $current_page == 1) {
+                                    $begin = 0;
+                                } else {
+                                    $begin = ($current_page - 1) * $itemsPerPage;
+                                }
+                                if (isset($_SESSION['s_user'])) {
+                                    $total_pages = so_trangdh($itemsPerPage, $_SESSION['s_user']['id']);
+                                    $id = $_SESSION['s_user']['id'];
+                                    $bill = donhang_id($id, $begin, $itemsPerPage);
+                                }
+                                include "view/mybill.php";
+                                break;
+                                case 'updatedcnhan':
+                                    if (isset($_SESSION['s_user'])) {
+                                        extract($_SESSION['s_user']);
+                                        # code...
+                                        echo 'hello';
+                                        $diachi = $_POST['diachi_nguoinhan'];
+                                        $sdt = $_POST['dienthoai_nguoinhan'];
+                                        update_noinhan($id, $sdt, $diachi);
+                                        $ghichu = $_POST['ghichu'];
+                                        if ($ghichu != '') {
+                                            if (isset($_SESSION['ghichu'])) {
+                                                unset($_SESSION['ghichu']);
+                                            }
+                                            $_SESSION['ghichu'] = $ghichu;
+                                        }
+                                        header('Location:index.php?pg=donhang');
+                                    } else {
+                                        header('Location:index.php?pg=donhang');
+                                    }
+                                    break;
+                                case 'billconfirm':
+                                    // echo'<pre>';
+                                    // print_r($_SESSION['bill']);
+                                    // die();
+                                    if (isset($_SESSION['bill'])) {
+                                        
+                                    $idbill = bill_user_insert_id(
+                                        $_SESSION['madon'],
+                                        $_SESSION['bill'][1],
+                                        $_SESSION['bill'][2],
+                                        $_SESSION['bill'][3],
+                                        $_SESSION['bill'][4],
+                                        $_SESSION['bill'][5],
+                                        $_SESSION['bill'][6],
+                                        $_SESSION['bill'][7],
+                                        $_SESSION['bill'][8],
+                                        $_SESSION['bill'][9],
+                                        $_SESSION['bill'][10],
+                                        $_SESSION['bill'][11],
+                                        $_SESSION['bill'][12]
+                                        );
+                                        if ($_SESSION['bill'][13] != '') {
+                                            voucherct($_SESSION['bill'][13], $_SESSION['s_user']['id']);
+                                        }
+                                        unset($_SESSION["bill"]);
+                                        $id_giohang = cart_insert_id($_SESSION["giohang"], $_SESSION['s_user'], $idbill);
+                                        unset($_SESSION["giohang"]);
+                                        include "view/donhang_configm.php";
+                                }else{
+                                    header('Location:index.php?pg=viewcart');
+                                }
+                                    break;
+
+                                    case "delgh":
+                                        $idsp = $_GET['idsp'];
+                                        $tien = $_GET['tien'];
+                                        $giohang = $_SESSION['giohang'];
+                                        $keyToDelete = -1;
+                                        foreach ($giohang as $key => $sp) {
+                                            if ($sp['idpro'] == $idsp && $sp['tien'] == $tien) {
+                                                $keyToDelete = $key;
+                                                break;
+                                            }
+                                        }
+                                        if ($keyToDelete != -1) {
+                                            unset($_SESSION['giohang'][$keyToDelete]);
+                                            // Cập nhật lại session nếu cần
+                                        }
+                                        header('Location:index.php?pg=viewcart');
+                                        break;
+                                    case "chitietdonhang":
+                                        $chitietdh = chitietdh($_GET['idbill']);
+                                        $chitietgh = chitietgh($_GET['idbill']);
+                                        // echo "<pre>";
+                                        // print_r($chitietdh);
+                                        $ten="";
+                                        $diachi = "";
+                                        $sdt = "";
+                                        $tong = "";
+                                        $tongthanhtoan = "";
+                                        $voucher = "";
+                                        $ngaymua = "";
+                                        $tentrangthai = "";
+                                        $tien = "";
+                                        $soluong = "";
+                                        $size = "";
+                                        $name = "";
+                                        $ten_hinh = "";
+                                        $sp = "";
+                                        foreach ($chitietdh as $value) {
+                                            $ten=$value['nguoinhan_ten'];
+                                            $diachi = $value['nguoinhan_diachi'];
+                                            $sdt = $value['nguoinhan_tel'];
+                                            $tong = $value['total'];
+                                            $tongthanhtoan = $value['tongthanhtoan'];
+                                            $voucher = $value['voucher'];
+                                            $ngaymua = $value['ngaymua'];
+                                            $tentrangthai = $value['tentrangthai'];
+                                        };
+                                        foreach ($chitietgh as $ghj) {
+                                            if ($ghj[2] == 0) {
+                                                $size = "S";
+                                            } else if ($ghj[2] == 4000) {
+                                                $size = "M";
+                                            } else {
+                                                $size = "L";
+                                            }
+                                            $tien = $ghj[0];
+                                            $soluong = $ghj[1];
+                                            $name = $ghj[3];
+                                            $ten_hinh = $ghj[4];
+                                            $sp .= '<div class="product">
+                                                    <div style="display:flex;">
+                                                        <img class="img" style="box-shadow : 0 -3px 10px 0 rgba(185, 185, 185, 0.5),0 5px 5px 0 rgba(185, 185, 185, 0.5);" src="' . IMG_PATH_USER . $ten_hinh . '" width="100px" style="float: left; margin-right: 20px;" alt="">
+                                                        <div style="margin-left:20px;">
+                                                            <p style="margin:0;">' . $name . '</p>
+                                                            <p>Size: ' . $size . '</p>
+                                                            <p>Số lượng: x' . $soluong . '</p>
+                                                        </div>
+                                                    </div>
+                                                    <p class="tien">' . number_format($tien,0,',','.') . ' đ</p>
+                                                </div>';
+                                        }
+                                        // echo "<pre>";
+                                        // print_r($chitietgh);
+                                        // die();
+                                        include "view/donhangchitiet.php";
+                                        break;
+                                    case "deletedh":
+                                        if ($_GET['idtht']==2||$_GET['idtht']==3){
+                                            $sql = "UPDATE bill SET id_trangthai=? WHERE id=?";
+                                            pdo_execute($sql, 7, $_GET['id']);
+                                            header('Location:index.php?pg=mybill');
+                                        }
+                                        if($_GET['idtt']==7){
+                                            $sql = "UPDATE bill SET id_trangthai=? WHERE id=?";
+                                            pdo_execute($sql, 1, $_GET['id']);
+                                            header('Location:index.php?pg=mybill');
+                                        }else if(($_GET['idtt']==1 && $_GET['idtht']==1)||($_GET['idtt']==1 && $_GET['idtht']==1)){
+                                            $sql = "UPDATE bill SET id_trangthai=? WHERE id=?";
+                                            pdo_execute($sql, 6, $_GET['id']);
+                                            header('Location:index.php?pg=mybill');
+                                        }
+                                        break;
+                                    default:
+                                        break;
 }
 }
