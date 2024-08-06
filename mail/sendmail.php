@@ -22,8 +22,8 @@ class Mailer
             $mail->isSMTP(); // Gửi mail SMTP
             $mail->Host = 'smtp.gmail.com'; // Set the SMTP server to send through
             $mail->SMTPAuth = true; // Enable SMTP authentication
-            $mail->Username = 'namnvph38661@fpt.edu.vn'; // SMTP username (your Gmail email)
-            $mail->Password = 'azxx uzou sluz dwdz'; // SMTP password or token (use app password or token for security)
+            $mail->Username = 'vutmph35719@fpt.edu.vn'; // SMTP username (your Gmail email)
+            $mail->Password = 'vu28052004.'; // SMTP password or token (use app password or token for security)
             $mail->SMTPSecure = 'tls'; // Enable TLS encryption
             $mail->Port = 587; // TCP port to connect to
 
