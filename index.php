@@ -422,23 +422,6 @@ if (!isset($_GET['pg'])) {
                     header('location: index.php?pg=viewcart');
                     include "view/viewcart.php";
                     break;
-                case 'dangnhap':
-                    include "view/dangnhap.php";
-                    if (isset($_POST['submit']) && ($_POST["submit"])) {
-                        $username = $_POST['username'];
-                        $password = $_POST['password'];
-                        $kq = checkuser($username, $password);
-        
-                        if (is_array($kq) && (count($kq))) {
-                            $_SESSION['s_user'] = $kq;
-                            header('location:index.php');
-                        } else {
-                            $tb = "Tài khoản không tồn tại khoặc sai";
-                            $_SESSION['tb_dangnhap'] = $tb;
-                            header('location:index.php?pg=dangnhap');
-                        }
-                    }
-                    break;
                     case 'sanpham':
                         $itemsPerPage = 8;
                         $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
