@@ -22,18 +22,6 @@ $html_dh = show_donhang($show_dh);
         <tbody>
             
         </tbody>
-        <tfoot>
-            <tr>
-            <th>STT</th>
-                <th>Mã đơn hàng</th>
-                <th>Tên nhận hàng</th>
-                <th>Điện thoại người nhận</th>
-                <th>Địa chỉ người nhận</th>
-                <th>Tổng thanh toán</th>
-                <th>PTTT</th>
-                <th>Trạng thái</th>
-                <th>Thao Tác</th>
-        </tfoot>
     </table>
     <?php 
         for ($i = 1; $i <= $sotrang; $i++) {
